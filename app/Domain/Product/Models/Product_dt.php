@@ -19,12 +19,12 @@ class Product_dt extends Model
   // ProductDigiflazz.php
   public function product()
   {
-    return $this->belongsTo(ProductsModel::class, 'brand', 'name');
+    return $this->belongsTo(Product::class, 'brand', 'name');
   }
 
 
-  public function categories()
-  {
-    return $this->belongsTo(Category::class, 'category_id');
-  }
+  // public function category()
+  // {
+  //   return $this->belongsTo(Category::class, 'category_id');
+  // }
 }

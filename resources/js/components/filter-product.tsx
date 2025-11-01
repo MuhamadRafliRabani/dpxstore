@@ -17,8 +17,8 @@ const FilterProduct = () => {
                         onClick={() => setCategory(id)}
                         className="font-barlow group text-accent-foreground relative inline-flex cursor-pointer justify-center overflow-hidden rounded-lg border-solid p-0.5 text-center text-base uppercase transition-transform duration-300 ease-in-out"
                     >
-                        <Button variant={'outline'} className={`font-size text-xxs whitespace-nowrap capitalize`}>
-                            {name}
+                        <Button variant={'outline'} className={`font-size text-xxs whitespace-nowrap capitalize sm:text-xs`}>
+                            {name.toLowerCase()}
                         </Button>
                         <span className="absolute top-0 left-[-75%] z-10 h-full w-[50%] rotate-12 bg-white/20 blur-lg transition-all duration-1000 ease-in-out group-hover:left-[125%]" />
                         <span className="drop-shadow-3xl border-accent-foreground absolute top-0 left-0 block h-[20%] w-1/2 rounded-tl-lg border-t-2 border-l-2 transition-all duration-300" />

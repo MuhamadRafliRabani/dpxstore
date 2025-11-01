@@ -9,16 +9,16 @@ const Footer = memo(() => {
 
     return (
         <footer className="bg-secondary text-accent-foreground border-t text-sm">
-            <div className="container mx-auto grid gap-6 px-4 py-8 md:grid-cols-4">
+            <div className="container mx-auto grid gap-6 px-4 py-8 sm:grid-cols-5">
                 {/* Logo dan Deskripsi */}
-                <div className="space-y-4 md:col-span-1">
+                <div className="space-y-4 sm:col-span-2">
                     <Logo />
-                    <p className="text-xs leading-relaxed">
+                    <p className="text-xs leading-relaxed sm:text-sm">
                         {configuration.website} adalah tempat top up games yang aman, murah dan terpercaya. Proses cepat 1-3 Detik. Open 24 jam.
                         Payment terlengkap. Jika ada kendala silahkan klik logo CS pada kanan bawah di website ini.
                     </p>
                     {/* Social Media */}
-                    <div className="flex gap-3 text-xl">
+                    <div className="flex gap-3 text-xl sm:text-2xl">
                         <a href="#" className="hover:text-white">
                             <Instagram />
                         </a>
@@ -41,8 +41,8 @@ const Footer = memo(() => {
 
                 {/* Peta Situs */}
                 <div>
-                    <h4 className="mb-2 text-xs font-semibold">Peta Situs</h4>
-                    <ul className="text-accent-foreground/90 space-y-1 text-xs">
+                    <h4 className="mb-2 text-xs font-semibold sm:text-base">Peta Situs</h4>
+                    <ul className="text-accent-foreground/90 space-y-1 text-xs sm:text-sm">
                         <li>
                             <Link href={route('home.index')} className="hover:underline">
                                 Beranda
@@ -68,8 +68,8 @@ const Footer = memo(() => {
 
                 {/* Dukungan */}
                 <div>
-                    <h4 className="mb-2 text-xs font-semibold">Dukungan</h4>
-                    <ul className="text-accent-foreground/90 space-y-1 text-xs">
+                    <h4 className="mb-2 text-xs font-semibold sm:text-sm">Dukungan</h4>
+                    <ul className="text-accent-foreground/90 space-y-1 text-xs sm:text-sm">
                         <li>
                             <a href="#" className="hover:underline">
                                 Whatsapp
@@ -90,8 +90,8 @@ const Footer = memo(() => {
 
                 {/* Legalitas */}
                 <div>
-                    <h4 className="mb-2 text-xs font-semibold">Legalitas</h4>
-                    <ul className="text-accent-foreground/90 space-y-1 text-xs">
+                    <h4 className="mb-2 text-xs font-semibold sm:text-sm">Legalitas</h4>
+                    <ul className="text-accent-foreground/90 space-y-1 text-xs sm:text-sm">
                         <li>
                             <Link href={route('home.index')} className="hover:underline">
                                 Kebijakan Privasi
@@ -107,7 +107,9 @@ const Footer = memo(() => {
             </div>
 
             {/* Bottom Bar */}
-            <div className="text-primary border-t py-4 text-center text-xs">&copy; {new Date().getFullYear()} Dpxstore. All rights reserved.</div>
+            <div className="text-primary border-t py-4 text-center text-xs sm:text-sm">
+                &copy; {new Date().getFullYear()} Dpxstore. All rights reserved.
+            </div>
         </footer>
     );
 });

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 export interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-    image: string;
+    image?: string;
     title: string;
 }
 
@@ -22,11 +22,11 @@ export function DataTable<TData, TValue>({ columns, data, title, image }: DataTa
     return (
         <Card className="space-y-0">
             <CardHeader className="my-0 flex w-full flex-row justify-between">
-                <div className="mt-2 w-fit">
-                    <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-                    <CardDescription>Daftar harga untuk produk yang tersedia.</CardDescription>
+                <div className="mt-2 w-fit space-y-1">
+                    <CardTitle className="sm:text-md text-sm font-semibold">{title}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">Daftar harga untuk produk yang tersedia.</CardDescription>
                 </div>
-                <img src={image} alt="Product Image" className="my-auto size-20 rounded-md object-cover" />
+                {image && <img src={image} alt="Product Image" className="my-auto size-12 rounded-md object-cover sm:size-14 md:size-20" />}
             </CardHeader>
             <CardContent>
                 <Table>
@@ -35,7 +35,7 @@ export function DataTable<TData, TValue>({ columns, data, title, image }: DataTa
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className="sm:text-md text-sm">
                                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                                         </TableHead>
                                     );

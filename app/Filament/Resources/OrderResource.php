@@ -20,6 +20,7 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('cretime', 'desc')
             ->columns([
                 TextColumn::make('id')
                     ->label('ID'),
@@ -40,10 +41,11 @@ class OrderResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'Pending' => 'gray',
-                        'Processing' => 'warning',
+                        'Pending' => 'warning',
+                        'Paid' => 'info',
                         'Success' => 'success',
                         'Canceled' => 'danger',
+                        'Fail' => 'danger',
                     }),
 
                 TextColumn::make('start_process')
@@ -52,7 +54,8 @@ class OrderResource extends Resource
 
                 TextColumn::make('end_process')
                     ->label('End Process')
-                    ->dateTime('d-m-Y, H:i'),
+                    ->dateTime('d-m-Y, H:i')
+                    ->placeholder('-'),
 
                 TextColumn::make('isvoucher')
                     ->label('Have Voucher')
@@ -68,11 +71,13 @@ class OrderResource extends Resource
                     ->dateTime('d-m-Y, H:i'),
 
                 TextColumn::make('modby')
-                    ->label('Modified By'),
+                    ->label('Modified By')
+                    ->placeholder('-'),
 
                 TextColumn::make('modtime')
                     ->label('Modified Time')
-                    ->dateTime('d-m-Y, H:i'),
+                    ->dateTime('d-m-Y, H:i')
+                    ->placeholder('-'),
             ])
             ->filters([
                 //

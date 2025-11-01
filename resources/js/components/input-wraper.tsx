@@ -10,10 +10,10 @@ const InputWraper = (props: props) => {
     return (
         <div className="text-accent">
             <div className="bg-accent overflow-hidden rounded-md shadow-lg">
-                <div className="header bg-primary-foreground text-accent-foreground flex items-center justify-start gap-4 text-xs">
+                <div className="header bg-primary-foreground text-accent-foreground flex items-center justify-start gap-4 text-xs sm:text-sm md:font-semibold">
                     {/* ganti jadi label */}
                     <div className="bg-accent text-accent-foreground px-4 py-2">
-                        <span className="text-xxs shrink-0">{props.number}</span>
+                        <span className="text-xxs shrink-0 sm:text-xs">{props.number}</span>
                     </div>
                     <h3>{props.title}</h3>
                 </div>

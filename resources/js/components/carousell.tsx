@@ -29,9 +29,14 @@ const Carousell = memo(() => {
     }, [api]);
 
     return (
-        <section className="flex w-full items-center justify-center overflow-hidden">
+        <section className="flex w-full items-center justify-center overflow-hidden px-4">
             <div className="space-y-4">
-                <Carousel setApi={setApi} opts={{ loop: true }} plugins={[autoplay]} className="carousell max-h-[70svh] overflow-hidden rounded-xl">
+                <Carousel
+                    setApi={setApi}
+                    opts={{ loop: true }}
+                    plugins={[autoplay]}
+                    className="max-h-[70svh] overflow-hidden rounded-xl lg:max-w-6xl"
+                >
                     <CarouselContent>
                         {banners.map((item, index) => (
                             <CarouselItem key={index}>

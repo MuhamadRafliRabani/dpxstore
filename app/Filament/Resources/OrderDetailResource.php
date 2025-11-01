@@ -20,6 +20,7 @@ class OrderDetailResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('cretime', 'desc')
             ->columns([
                 TextColumn::make('id')
                     ->label('ID'),

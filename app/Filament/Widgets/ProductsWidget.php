@@ -30,7 +30,7 @@ class ProductsWidget extends BaseWidget
                 ->chart([1, 9, 45, 27, 65])
                 ->color('success'),
             Stat::make('Profits', 'Rp. ' . number_format($profits, 0, ',', '.'))
-                ->description('3% increase')
+                ->description('0% increase')
                 ->descriptionIcon('heroicon-m-arrow-trending-up', IconPosition::Before)
                 ->chart([1, 22, 15, 33, 65])
                 ->color('success'),

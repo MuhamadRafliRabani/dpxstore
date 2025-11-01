@@ -1,6 +1,6 @@
 const ProductCardLoading = () => {
     return (
-        <div className="group bg-accent-foreground/30 border-accent relative inline-flex h-55 w-40 shrink-0 animate-pulse cursor-pointer justify-center overflow-hidden rounded-md border shadow-md hover:scale-98 hover:shadow-lg">
+        <div className="group bg-accent-foreground/30 border-accent relative inline-flex h-55 w-40 shrink-0 animate-pulse cursor-pointer justify-center overflow-hidden rounded-md border shadow-md hover:scale-98 hover:shadow-lg sm:h-58 sm:w-43">
             <div className="bg-accent absolute right-0 bottom-0 left-0 space-y-2 p-2">
                 <h3 className="bg-accent-foreground/50 h-4 animate-pulse rounded"></h3>
                 <p className="bg-accent-foreground/50 h-3 animate-pulse rounded"></p>

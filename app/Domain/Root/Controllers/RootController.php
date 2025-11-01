@@ -4,7 +4,6 @@ namespace App\Domain\Root\Controllers;
 
 use App\Domain\Banner\Models\Banner;
 use App\Domain\Category\Models\Category;
-use App\Domain\Product\Models\Product_dt;
 use App\Domain\Product\Models\ProductFavorite;
 use App\Domain\Product\Models\Product;
 use App\Http\Controllers\Controller;
@@ -13,79 +12,58 @@ use Illuminate\Support\Facades\Cache;
 
 class RootController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // handle categories
+
+        $product_populer = ProductFavorite::with('product:id,name,slug,image,publisher,category_id')->get();
+
+        $banners = Cache::remember('banners', $this->ttl, fn() => Banner::select(['id', 'image', 'status'])->get());
+
+        return inertia('Page', [
+            'configuration' => $this->getConfiguration(),
+            'product_populer' => $product_populer,
+            'banners' => $banners,
+            'categories' => $this->getCategories(),
+            'show' => true
+        ]);
+    }
+
+    public function getDataProducts(Request  $request)
+    {
         $categoryId = $request->query('category', 1);
         $page = $request->query('page', 1);
-        $ttl = 900;
 
-        $categories = Cache::remember('categories', $ttl, fn() => Category::all());
+        if ($categoryId == 0) {
+            $categoryId = 1;
+        };
 
-        // handle games
-        $products = Cache::remember(
-            "games_cat_{$categoryId}_page_{$page}",
-            $ttl,
-            fn() => Product::select(['id', 'name', 'slug', 'publisher', 'image', 'category_id', 'status'])
-                ->where('status', '1')
-                ->where('category_id', $categoryId)
-                ->with('category:id,name')
-                ->simplePaginate(15)
+        return $this->getProducts($categoryId, $page);
+    }
+
+    public function listHarga(Request $request)
+    {
+        $page = $request->query('page', 1);
+
+        // handle product
+        $product = Cache::remember(
+            "list_harga_page_{$page}",
+            $this->ttl, // 15 menit
+            fn() => Product::where('status', 1)
+                ->whereHas('product_item')
+                ->select('id', 'name', 'code', 'image')
+                ->with('product_item:brand,product_name,buyer_sku_code,category,price,start_cut_off,end_cut_off,desc')
+                ->simplePaginate(10)
                 ->withQueryString()
         );
 
-        // handle product populer
-        $product_populer = ProductFavorite::with('product:id,name,slug,image,publisher')->get();
-
-        $banners = Cache::remember('banners', $ttl, fn() => Banner::select(['id', 'image', 'status'])->get());
-
-        if ($request->wantsJson()) {
-            return $products;
-        };
-
-        return inertia('Page', [
-            'configuration' => $this->configuration,
-            'product_populer' => $product_populer,
-            'banners' => $banners,
-            'games' => $products,
-            'categories' => $categories,
-        ]);
-    }
-
-
-    public function listHarga()
-    {
-        // handle product
-        $product =
-            Product_dt::select([
-                'product_name',
-                'buyer_sku_code',
-                'brand',
-                'category',
-                'price'
-            ])->with(['product:id,name,image'])->get();
-
-
-        // handle configuration
+        $config = $this->getConfiguration();
 
         return inertia('information/list-harga', [
             'title' => 'Daftar Harga TopUp Diamond, Pulsa & Kuota Termurah',
-            'description' => 'Lihat daftar harga terbaru untuk diamond game, pulsa, kuota internet, dan voucher di ' . $this->configuration['website'] . '.' . ' Dapatkan top up cepat, aman, dan harga terbaik sekarang juga!',
+            'description' => 'Lihat daftar harga terbaru untuk diamond game, pulsa, kuota internet, dan voucher di ' . $config['website'] . '.' . ' Dapatkan top up cepat, aman, dan harga terbaik sekarang juga!',
             'products' => $product,
-            'configuration' => $this->configuration
-        ]);
-    }
-
-
-    public function cekPesanan()
-    {
-
-        Cache::put('configuration', $this->configuration, 3600);
-
-        return inertia('information/cek-pesanan', [
-            'title' => 'Cek Status Pesanan Kamu',
-            'description' => 'Masukkan nomor pesanan untuk cek status pengiriman dan detail transaksi kamu di ' . $this->configuration['website'] . ' Proses cepat, aman, dan akurat.',
-            'configuration' => $this->configuration
+            'configuration' => $config,
+            'categories' => $this->getCategories()
         ]);
     }
 

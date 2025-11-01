@@ -46,9 +46,9 @@
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
   {{-- production --}}
-  {{-- <script src="https://app.midtrans.com/snap/snap.js" data-client-key="Mid-client-kmr_NHHdWEK1Nrrb"></script> --}}
+  <script src="https://app.midtrans.com/snap/snap.js" data-client-key="Mid-client-kmr_NHHdWEK1Nrrb"></script>
   {{-- development --}}
-  <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-fmQ24Cw8snD5mR8u"></script>
+  {{-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-fmQ24Cw8snD5mR8u"></script> --}}
 
   @routes
   @viteReactRefresh

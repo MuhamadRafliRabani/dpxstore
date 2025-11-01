@@ -12,10 +12,10 @@ import Image from './ui/loading-image';
 import { ScrollArea } from './ui/scroll-area';
 
 const GameSearchSelect = ({ search, showSearch, cardSearch, setShowSearch }: SearchType) => {
-    const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState<string | undefined>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [debouncedSearch] = useDebounce(searchValue, 400);
     const [results, setResults] = useState<GameType[] | null>(null);
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
     const handleCloseCard = () => {
         setSearchValue('');
@@ -29,13 +29,16 @@ const GameSearchSelect = ({ search, showSearch, cardSearch, setShowSearch }: Sea
         }
 
         const fetchGames = async () => {
+            setIsLoading(true);
             try {
                 const res = await fetch(`/search?q=${debouncedSearch}`);
                 const data = await res.json();
                 setResults(data);
             } catch (err) {
                 console.error(err);
+                setIsLoading(false);
             }
+            setIsLoading(false);
         };
 
         fetchGames();
@@ -44,9 +47,9 @@ const GameSearchSelect = ({ search, showSearch, cardSearch, setShowSearch }: Sea
     return (
         <div
             ref={search}
-            className="absolute inset-x-0 top-15 z-5 mx-auto hidden h-full max-h-[400px] w-full max-w-11/12 items-center justify-center overflow-hidden rounded md:static md:flex md:h-[40px] md:max-h-[40px]"
+            className="absolute inset-x-0 top-15 z-5 mx-auto hidden h-full max-h-[400px] w-full max-w-11/12 items-center justify-center overflow-hidden rounded md:static md:flex md:max-h-[40px]"
         >
-            <div className="relative h-full max-h-[40px] w-full md:max-h-full">
+            <div className="relative mx-auto h-full w-full sm:w-11/12">
                 <Search className="text-primary/70 absolute top-[45%] left-3 size-4 -translate-y-1/2" />
                 <Input
                     type="text"
@@ -54,46 +57,48 @@ const GameSearchSelect = ({ search, showSearch, cardSearch, setShowSearch }: Sea
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     placeholder="Cari Game atau Voucher"
-                    className="text-primary placeholder:text-primary/70 w-full bg-gray-700 py-2 ps-8 text-sm placeholder:text-xs"
+                    className="text-primary placeholder:text-primary/70 bg-accent-foreground/10 w-full py-2 ps-8 text-sm placeholder:text-xs sm:text-2xl sm:placeholder:text-sm"
                 />
                 {searchValue != '' && (
                     <X className="text-primary/80 absolute top-[45%] right-3 size-4 -translate-y-1/2" onClick={() => handleCloseCard()} />
                 )}
             </div>
             {searchValue != '' ? (
-                !results ? (
-                    <Card className="absolute inset-x-0 top-9 z-4 mx-auto h-full max-h-[350px] w-full overflow-hidden border-none px-10 pb-0 shadow-none md:top-12 md:-left-7 md:max-w-[28rem] lg:max-w-[60rem]">
-                        <div className="hover:bg-muted/10 container grid grid-cols-6 gap-4">
-                            <div className="size-12 animate-pulse place-items-center rounded bg-black/30 object-cover md:size-15" />
-                            <div className="col-span-5 space-y-2">
-                                <div className="col-span-2 h-6 w-full animate-pulse rounded bg-black/30 font-medium"></div>
-                                <div className="h-4 w-full animate-pulse rounded bg-black/30"></div>
+                isLoading || !results ? (
+                    <Card className="absolute inset-x-0 top-9 z-4 mx-auto h-full max-h-[350px] w-full -space-y-2 overflow-hidden border-none px-4 pb-0 shadow-none sm:top-12 sm:-left-7 sm:max-w-[29rem] lg:max-w-[55rem]">
+                        {[...Array(5)].map(() => (
+                            <div className="hover:bg-muted/10 container grid grid-cols-6 space-x-4 sm:w-11/12">
+                                <div className="bg-accent-foreground/40 size-12 animate-pulse place-items-center rounded object-cover sm:size-14" />
+                                <div className="col-span-5 space-y-1 sm:mt-2">
+                                    <div className="bg-accent-foreground/40 col-span-2 h-5 w-full animate-pulse rounded font-medium"></div>
+                                    <div className="bg-accent-foreground/40 h-4 w-3/4 animate-pulse rounded"></div>
+                                </div>
                             </div>
-                        </div>
+                        ))}
                     </Card>
                 ) : (
                     <Card
                         ref={cardSearch}
-                        className="absolute inset-x-0 top-9 z-4 mx-auto h-full max-h-[350px] w-full overflow-hidden border-none pb-0 shadow-none md:top-12 md:-left-7 md:max-w-[20rem] lg:max-w-[60rem]"
+                        className="absolute inset-x-0 top-9 z-4 mx-auto h-full max-h-[350px] w-full overflow-hidden border-none pb-0 shadow-none sm:top-12 sm:-left-7 sm:max-w-[29rem] lg:max-w-[55rem]"
                     >
-                        <ScrollArea data-lenis-prevent type="always" className="h-fit max-h-[340px] w-full overflow-y-auto px-4 pb-8 md:h-[400px]">
+                        <ScrollArea type="always" className="h-fit max-h-[340px] w-full overflow-y-auto px-4 pb-8 sm:h-[400px]">
                             <div className="space-y-4 pb-4">
                                 {results?.length == 0 && (
-                                    <div className="flex items-center justify-center">
+                                    <div className="flex items-center justify-center sm:h-[300px]">
                                         <NotFound item="Games" message="Tidak ada hasil untuk pencarianmu ..." />
                                     </div>
                                 )}
 
                                 {results?.map((game, index) => (
                                     <Link
-                                        href={`/product/${game.category?.name}/${game.slug}`}
+                                        href={`/product/${game.category?.name.toLowerCase()}/${game.slug}`}
                                         key={index}
                                         className="hover:bg-muted/10 flex items-center gap-4"
                                     >
                                         <Image src={'/storage/' + game.image} className="size-12 rounded object-cover md:size-15" />
                                         <div>
-                                            <div className="text-primary text-sm font-medium md:text-base">{game.name}</div>
-                                            <div className="text-primary/70 text-xs md:text-sm">{game.publisher}</div>
+                                            <div className="text-primary text-sm font-medium sm:text-base">{game.name}</div>
+                                            <div className="text-primary/70 text-xs sm:text-sm">{game.publisher}</div>
                                         </div>
                                     </Link>
                                 ))}

@@ -85,19 +85,23 @@ class ProductResource extends Resource
                     ->placeholder('Publisher Name')
                     ->required(),
 
+                Checkbox::make('status')
+                    ->label('Status')
+                    ->inline(false)
+                    ->default(1),
+
+                Checkbox::make('full_input')
+                    ->label('Full Input')
+                    ->inline(false)
+                    ->default(0),
+
                 FileUpload::make('image')
                     ->label('Image')
                     ->directory('product')
                     ->disk('public')
                     ->image()
-                    ->preserveFilenames()
                     ->imageEditor()
                     ->required(),
-
-                Checkbox::make('status')
-                    ->label('Status')
-                    ->inline(false)
-                    ->default(1),
 
                 Hidden::make('creby')
                     ->default(auth()->user()->name)
@@ -140,6 +144,13 @@ class ProductResource extends Resource
                     ->badge()
                     ->color(fn(string $state): string => $state == '1' ? 'success' : 'danger')
                     ->formatStateUsing(fn($state) => $state == '1' ? 'Active' : 'Inactive')
+                    ->sortable(),
+
+                TextColumn::make('full_input')
+                    ->label('Full Input')
+                    ->badge()
+                    ->color(fn(string $state): string => $state == '1' ? 'success' : 'info')
+                    ->formatStateUsing(fn($state) => $state == '1' ? 'Full' : 'Not Full')
                     ->sortable(),
 
                 ImageColumn::make('image')

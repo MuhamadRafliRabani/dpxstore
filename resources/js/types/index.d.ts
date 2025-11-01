@@ -100,6 +100,7 @@ export interface GameType {
     check_code: string;
     code: string;
     provider: string;
+    full_input: boolean;
     publisher?: string;
     created_at: string;
     updated_at: string;
@@ -111,6 +112,7 @@ export interface ProductPopulerType {
     game_id: number;
     provider: string;
     created_at: string;
+    category_id: number;
     updated_at: string;
     product: GameType; // ini relasi-nya
 }
@@ -137,22 +139,19 @@ export interface PaginatedResponse<T> {
 
 export interface ProductType {
     id: number;
-    game_id: number;
-    category_id: number;
-    product: string;
-    price: number;
-    provider: string;
-    sku: string;
-    status: 'On' | 'Off';
-    check_code: string;
-    price_silver: number;
-    price_gold: number;
+    name: string;
+    category_id: string;
     image: string;
-    raw_price: number;
-    product_ref: number | null;
-    created_at: string; // ISO date string, atau bisa pakai Date kalau langsung di-parse
-    updated_at: string;
-    game?: GameType;
+    slug: string;
+    code: string;
+    publisher: string;
+    status: boolean;
+    full_input: boolean;
+    creby: string;
+    cretime: string;
+    modby: string;
+    modtime: string;
+    product_item?: ProductDtType[];
 }
 
 export interface ProductDtType {
@@ -172,9 +171,10 @@ export interface ProductDtType {
     start_cut_off: string;
     end_cut_off: string;
     desc: string;
-    games?: GameType;
-    game_id: number;
-    category_id: number;
+    creby: string;
+    cretime: string;
+    modby: string;
+    modtime: string;
 }
 
 export interface configuration {
@@ -204,13 +204,14 @@ export interface inputOrder {
     loading?: boolean;
     setData: (key: string, value: string) => void;
     errors: Partial<Record<'user_id' | 'zone_id' | 'no_handphone' | 'no_akun' | 'voucher_code' | 'whatsapp' | 'product_id', string>>;
+    full_input?: boolean;
 }
 
 export interface productContentType {
     data: DataOrder;
     username?: string | null;
     loading?: boolean;
-    category: string | undefined;
+    category_name: string | unknown;
     products: ProductDtType[];
     setData: (key: string, value: string | number) => void;
     errors: Partial<Record<'user_id' | 'zone_id' | 'no_handphone' | 'no_akun' | 'voucher_code' | 'whatsapp' | 'product_id', string>>;
@@ -227,4 +228,39 @@ export interface SearchType {
     showSearch: boolean;
     cardSearch: Ref<HTMLDivElement> | undefined;
     setShowSearch: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface OrderType {
+    id: string;
+    order_code: string;
+    price: number;
+    start_process: string;
+    end_process: string;
+    isvoucher: boolean;
+    payment_type: string;
+    creby: string;
+    cretime: string;
+    modby: string;
+    modtime: string;
+    order_detail?: OrderDetailType;
+}
+
+export interface OrderDetailType {
+    id: string;
+    order_id: string;
+    category_id: string;
+    product_id: string;
+    voucher_id: string;
+    user_id: string;
+    username: string;
+    no_handphone: string;
+    no_akun: string;
+    whatsapp: string;
+    category_name?: string;
+    voucher?: string;
+    product_name?: string;
+    creby: string;
+    cretime: string;
+    modby: string;
+    modtime: string;
 }

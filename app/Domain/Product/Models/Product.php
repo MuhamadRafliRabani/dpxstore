@@ -23,6 +23,11 @@ class Product extends Model
 
 	protected $guarded = [];
 
+	public function product_item()
+	{
+		return $this->hasMany(Product_dt::class, 'brand', 'code');
+	}
+
 	public function category()
 	{
 		return $this->belongsTo(Category::class, 'category_id');

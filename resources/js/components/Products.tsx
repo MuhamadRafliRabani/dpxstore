@@ -1,6 +1,6 @@
 'use client';
 
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { useCategory } from '@/hooks/useCategory';
 import { handleScrollProduct } from '@/lib/handle-scroll';
 import { categoriesType, GameType, PaginatedResponse } from '@/types';
@@ -13,11 +13,11 @@ import ProductCardLoading from './product-card-loading';
 import { Button } from './ui/button';
 
 const Products = () => {
-    const { games, categories } = usePage<{ games: GameType[]; categories: categoriesType[] }>().props;
+    const { categories } = usePage<{ games: GameType[]; categories: categoriesType[] }>().props;
     const { category: currentCategoryId } = useCategory();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [data, setData] = useState<PaginatedResponse<GameType>>(games as unknown as PaginatedResponse<GameType>);
+    const [data, setData] = useState<PaginatedResponse<GameType>>();
 
     const cancelTokenRef = useRef(axios.CancelToken.source());
 
@@ -30,12 +30,15 @@ const Products = () => {
             handleScrollProduct();
 
             try {
+                console.log({ currentCategoryId, page });
+
                 setIsLoading(true);
 
-                const endpoint = `?page=${page}&category=${currentCategoryId}`;
+                const endpoint = `/products/?page=${page}&category=${currentCategoryId}`;
                 const response = await axios.get(endpoint, {
                     cancelToken: cancelTokenRef.current.token,
                 });
+                console.log(response.data);
 
                 setData(response.data);
 
@@ -75,46 +78,54 @@ const Products = () => {
     return (
         <section className="space-y-4 px-2.5">
             <div>
-                <h2 className="text-md font-medium capitalize">All Products 🔥</h2>
+                <h2 className="text-xs font-medium capitalize sm:text-sm md:font-semibold">🔥 ALL PRODUCTS</h2>
             </div>
 
-            {data.data.length == 0 && !isLoading ? (
+            {data?.data.length == 0 && !isLoading ? (
                 <NotFound item={currentCategory?.name ?? 'product'} message="Mohon kembali lagi nanti atau explore produk lain." />
             ) : null}
 
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8">
+            <div className="mx-auto grid w-fit grid-cols-2 place-items-center justify-items-center gap-5 sm:h-full sm:w-full sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 {!isLoading ? (
                     <>
-                        {data.data.map((game) => (
+                        {data?.data.map((game) => (
                             <CardProduct
                                 key={game.id} // pakai id supaya stabil
                                 title={game.name}
-                                url={`/product/${game.category?.name}/${game.slug}`}
+                                url={`/product/${game.category?.name.toLowerCase()}/${game.slug}`}
                                 publisher={game.publisher}
                                 image={`/storage/${game.image ?? '01JWNRWN1JN2AW6NSKP763Q5V1.jpeg'}`}
                             />
                         ))}
                     </>
                 ) : (
-                    [...Array(8)].map((_, index) => <ProductCardLoading key={index} />)
+                    [...Array(16)].map((_, index) => <ProductCardLoading key={index} />)
                 )}
             </div>
 
             <Pagination>
-                <PaginationContent className="text-primary hover:text-primary">
+                <PaginationContent className="text-accent-foreground hover:text-primary">
                     {/* Previous */}
                     <Button
-                        onClick={() => fetchData(data.current_page - 1)}
+                        onClick={() => {
+                            let current_page = 0;
+
+                            if (data?.current_page) {
+                                current_page = data.current_page;
+                            }
+
+                            fetchData(current_page - 1);
+                        }}
                         className="text-accent-foreground bg-transparent hover:bg-transparent"
-                        disabled={isLoading || !data.prev_page_url}
+                        disabled={isLoading || !data?.prev_page_url}
                     >
                         <PaginationItem>
-                            <PaginationPrevious className={!data.prev_page_url ? 'text-muted' : ''} />
+                            <PaginationPrevious className={`sm:text-base ${!data?.prev_page_url ? 'text-muted' : ''}`} />
                         </PaginationItem>
                     </Button>
 
                     {/* Page Number Buttons */}
-                    {Array.from({ length: data.last_page }, (_, idx) => {
+                    {/* {Array.from({ length: data.last_page }, (_, idx) => {
                         const page = idx + 1;
                         return (
                             <Button key={page} onClick={() => fetchData(page)} disabled={data.current_page === page}>
@@ -123,16 +134,24 @@ const Products = () => {
                                 </PaginationItem>
                             </Button>
                         );
-                    })}
+                    })} */}
 
                     {/* Next */}
                     <Button
-                        onClick={() => fetchData(data.current_page + 1)}
+                        onClick={() => {
+                            let current_page = 0;
+
+                            if (data?.current_page) {
+                                current_page = data.current_page;
+                            }
+
+                            fetchData(current_page + 1);
+                        }}
                         className="text-accent-foreground bg-transparent hover:bg-transparent"
-                        disabled={isLoading || !data.next_page_url}
+                        disabled={isLoading || !data?.next_page_url}
                     >
                         <PaginationItem>
-                            <PaginationNext className={!data.next_page_url ? 'text-muted' : ''} />
+                            <PaginationNext className={`sm:text-base ${!data?.next_page_url ? 'text-muted' : ''}`} />
                         </PaginationItem>
                     </Button>
                 </PaginationContent>

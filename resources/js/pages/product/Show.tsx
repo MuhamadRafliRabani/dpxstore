@@ -7,7 +7,6 @@ import InputTagihan from '@/components/show/tagihan-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { TiltCard } from '@/components/ui/tilt-card';
 import AppLayout from '@/layouts/app-layout';
 import { GameType, ProductDtType } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
@@ -20,9 +19,9 @@ const ShowProduct = () => {
     const { product_dt, product, category } = usePage<{ product_dt: ProductDtType[]; product: GameType; category: string }>().props;
     const [loadingToken, setLoadingToken] = useState<boolean>(false);
     // const [voucherResult, setVoucherResult] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
-    console.log('🚀 ~ ShowProduct ~ setLoading:', setLoading);
 
+    const [loading, setLoading] = useState(false);
+    console.log(setLoading);
     // store data form
     const { data, setData, errors } = useForm({
         user_id: '',
@@ -36,8 +35,8 @@ const ShowProduct = () => {
     });
 
     // useEffect(() => {
-    //     if (data.user_id && data.zone_id) {
-    //         const debouncedCheck = debounce(() => {
+    //     if (product.full_input ? data.user_id && data.zone_id : data.user_id) {
+    //         const debouncedCheck = useDebounce(() => {
     //             setLoading(true);
 
     //             axios
@@ -82,7 +81,7 @@ const ShowProduct = () => {
         setLoadingToken(true);
 
         axios
-            .post(route('order.createTokenMidtrans'), data)
+            .post('/checkout', data)
             .then(({ data }) => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
@@ -107,15 +106,22 @@ const ShowProduct = () => {
     };
 
     const isFormValid = () => {
-        if (category === 'Data & Pulsa') {
+        if (category === 'pulsa & data') {
             return !data.no_handphone.trim() || !data.product_id || !data.whatsapp;
         }
 
-        if (category === 'Games') {
-            return !data.user_id.trim() || !data.zone_id.trim() || !data.product_id || !data.whatsapp;
+        if (category === 'games') {
+            if (product.full_input == true) {
+                return !data.user_id.trim() || !data.zone_id.trim() || !data.product_id || !data.whatsapp;
+            }
+            return !data.user_id.trim() || !data.product_id || !data.whatsapp;
         }
 
-        if (category === 'Tagihan') {
+        if (category === 'voucher') {
+            return !data.product_id || !data.whatsapp;
+        }
+
+        if (category === 'tagihan') {
             return !data.no_akun.trim() || !data.product_id || !data.whatsapp;
         }
 
@@ -124,10 +130,12 @@ const ShowProduct = () => {
     };
 
     const inputComponents: Record<string, JSX.Element | null> = {
-        Games: <InputGame username={data?.username} loading={loading} data={data} setData={setData} errors={errors} />,
-        'Data & Pulsa': <InputDatapulsa data={data} setData={setData} errors={errors} />,
-        Tagihan: <InputTagihan data={data} setData={setData} errors={errors} />,
-        Voucher: null,
+        'pulsa & data': <InputDatapulsa data={data} setData={setData} errors={errors} />,
+        games: (
+            <InputGame username={data?.username} loading={loading} data={data} setData={setData} errors={errors} full_input={product.full_input} />
+        ),
+        tagihan: <InputTagihan data={data} setData={setData} errors={errors} />,
+        voucher: null,
     };
 
     return (
@@ -139,12 +147,12 @@ const ShowProduct = () => {
                 </div>
 
                 {/* Header */}
-                <div className="bg-order-header-background bg-card bg-order-header-background text-order-header-foreground flex h-26 w-full flex-col justify-center gap-4 px-4">
+                <div className="bg-order-header-background bg-card bg-order-header-background text-order-header-foreground flex h-26 w-full flex-col justify-center gap-4 px-4 sm:h-31">
                     <div className="flex items-center gap-4">
-                        <TiltCard max={8} speed={200} className="size-12 object-cover">
+                        <div className="size-12 object-cover sm:size-16">
                             <img src={`/storage/${product.image}`} alt={product.name} className="h-full w-full rounded-md object-cover" />
-                        </TiltCard>
-                        <div className="text-accent-foreground space-y-2 text-xs font-medium">
+                        </div>
+                        <div className="text-accent-foreground space-y-2 text-xs font-medium sm:text-sm">
                             <h1>{product.name}</h1>
                             <p>{product.publisher || ''}</p>
                         </div>
@@ -159,33 +167,35 @@ const ShowProduct = () => {
                 </div>
 
                 <form action="" method="post" onSubmit={handleSubmit} className="">
-                    <div className="">
+                    <div className="justify-center gap-4 lg:flex">
                         {/* Right: Form Input */}
-                        <div className="sticky top-0 space-y-4">
-                            {category != 'Voucher' && (
-                                <InputWraper title="Lengkapi Data Diri" number={1}>
-                                    <div className="space-y-2 p-4 pt-2">{inputComponents[category]}</div>
-                                </InputWraper>
+                        <div className="space-y-4 lg:flex-[60%]">
+                            {category != 'voucher' && (
+                                <div className="lg:hidden">
+                                    <InputWraper title="Lengkapi Data Diri" number={1}>
+                                        <div className="space-y-2 p-4 pt-2">{inputComponents[category]}</div>
+                                    </InputWraper>
+                                </div>
                             )}
 
                             {/* Left: Product List */}
 
-                            <InputWraper title="Pilih Product" number={2}>
+                            <InputWraper title="Pilih Product" number={category === 'voucher' ? 1 : 2}>
                                 {errors.product_id && !data.product_id && (
                                     <div className="error-style">
                                         <p className="">Pilih salah satu produt</p>
                                     </div>
                                 )}
-                                <ProductContent category={category} data={data} setData={setData} products={product_dt} errors={errors} />
+                                <ProductContent category_name={category} data={data} setData={setData} products={product_dt} errors={errors} />
                             </InputWraper>
 
-                            <InputWraper title="Kode Voucher" number={3}>
+                            <InputWraper title="Kode Voucher" number={category === 'voucher' ? 2 : 3}>
                                 <div className="flex items-center gap-2 p-4">
                                     <Input
                                         placeholder="Ketik kode promo kamu"
                                         value={data.voucher_code}
                                         onChange={(e) => setData('voucher_code', e.target.value)}
-                                        className="placeholder:text-accent-foreground text-accent-foreground text-xxs bg-accent-foreground/10 flex-1"
+                                        className="placeholder:text-accent-foreground/40 bg-accent-foreground/10 text-xxs text-accent flex-1 md:text-xs md:placeholder:text-xs dark:text-white"
                                     />
                                     <Button
                                         variant="secondary"
@@ -196,22 +206,22 @@ const ShowProduct = () => {
                                 </div>
                             </InputWraper>
 
-                            <InputWraper title="Kontak" number={4}>
+                            <InputWraper title="Kontak" number={category === 'voucher' ? 3 : 4}>
                                 <div className="space-y-3 p-4">
                                     <Label className="text-accent-foreground text-xs font-medium">No. WhatsApp</Label>
                                     <div className="mt-2 flex gap-2">
                                         <Input
                                             readOnly={true}
                                             placeholder="+62"
-                                            className="text-accent-foreground placeholder:text-accent-foreground bg-accent-foreground/10 text-xxs w-[50px] text-center opacity-60"
+                                            className="bg-accent-foreground/10 text-xxs placeholder:text-accent-foreground/40 text-accent w-[50px] text-center opacity-60 md:text-xs md:placeholder:text-xs dark:text-white"
                                         />
                                         <Input
                                             id="whatsapp"
-                                            placeholder="812xxxxxxx"
+                                            placeholder="0812 3456 7890"
                                             value={data.whatsapp}
                                             type="number"
                                             onChange={(e) => setData('whatsapp', e.target.value)}
-                                            className="text-accent-foreground placeholder:text-accent-foreground/70 text-xxs bg-accent-foreground/10 flex-1"
+                                            className="placeholder:text-accent-foreground/40 bg-accent-foreground/10 text-xxs text-accent flex-1 md:text-xs md:placeholder:text-xs dark:text-white"
                                         />
                                     </div>
 
@@ -230,6 +240,16 @@ const ShowProduct = () => {
                             >
                                 {loadingToken ? 'Memproses...' : 'Pesan Sekarang'}
                             </Button>
+                        </div>
+
+                        <div className="sticky top-0 hidden space-y-4 lg:inline-flex lg:flex-auto">
+                            {category != 'voucher' && (
+                                <div className="">
+                                    <InputWraper title="Lengkapi Data Diri" number={1}>
+                                        <div className="space-y-2 p-4 pt-2">{inputComponents[category]}</div>
+                                    </InputWraper>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </form>

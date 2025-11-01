@@ -31,5 +31,9 @@ export default defineConfig({
             port: 5173,
         },
         allowedHosts: ['.ngrok-free.app'],
+        cors: {
+            origin: true, // atau array origin yang kamu izinkan, misal ['https://domainmu.com']
+            // atau bisa origin: ['https://dpxstore.id', 'http://localhost:5173']
+        },
     },
 });

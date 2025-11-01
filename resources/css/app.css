@@ -175,6 +175,10 @@ body {
     will-change: transform;
 }
 
+/* * {
+    border: 1px solid red;
+} */
+
 @keyframes carousel-progress {
     from {
         width: 0%;

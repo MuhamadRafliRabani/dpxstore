@@ -51,15 +51,15 @@ const Navbar = memo(() => {
     };
 
     return (
-        <header className="bg-secondary text-white shadow-sm">
-            <div className="flex w-full flex-col items-center">
-                <div className="top container mx-auto flex w-full items-center justify-between px-4 py-2 md:gap-8">
+        <header className="bg-secondary w-full text-white shadow-sm">
+            <div className="container mx-auto flex max-w-lg flex-1 flex-col items-center overflow-hidden pt-2 pb-4 sm:max-w-xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl">
+                <div className="top container mx-auto flex w-full items-center justify-between px-4 py-2">
                     {/* Logo */}
                     <Logo />
                     {/* Search */}
 
                     <GameSearchSelect search={search} showSearch={showSearch} cardSearch={cardSearch} setShowSearch={setShowSearch} />
-                    <div className="me-2 flex min-w-fit items-center justify-center gap-2 md:me-0">
+                    <div className="flex min-w-fit items-center justify-center gap-2">
                         <button onClick={(e) => handleShowSearch(e)} className="size-5 md:hidden">
                             <Search className="h-full w-full" />
                         </button>
@@ -84,7 +84,7 @@ const Navbar = memo(() => {
                     <nav className="flex w-full items-center justify-between gap-6">
                         <ul className="flex items-center gap-6">
                             <li>
-                                <a href="#product" className="text-sm font-medium transition hover:text-white/90">
+                                <a href="/#product" className="text-sm font-medium transition hover:text-white/90">
                                     <p className="flex items-center gap-2">
                                         <span>
                                             <BriefcaseBusiness className="size-5" />

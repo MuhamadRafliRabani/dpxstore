@@ -6,14 +6,14 @@ const CardProduct = memo(({ title, publisher, image, url }: CardProductProps) =>
     return (
         <Link href={url}>
             <div
-                className="card group hover:border-accent-foreground bg-accent/70 relative inline-flex h-55 w-40 shrink-0 cursor-pointer justify-center overflow-hidden rounded-md shadow-md transition-transform duration-300 ease-in-out hover:scale-98 hover:border hover:shadow-lg"
+                className="group hover:border-accent-foreground bg-accent/70 relative inline-flex h-55 w-40 shrink-0 cursor-pointer grid-cols-1 justify-center overflow-hidden rounded-md shadow-md transition-transform duration-300 ease-in-out hover:scale-98 hover:border hover:shadow-lg sm:h-58 sm:w-43"
                 key={title}
             >
                 <img src={image} className="h-full w-full" />
 
-                <div className="bg-accent text-accent-foreground absolute right-0 bottom-0 left-0 p-2">
-                    <h3 className="text-xxs font-semibold uppercase">{title}</h3>
-                    <p className="text-xxs">{publisher}</p>
+                <div className="bg-accent text-accent-foreground text-xxs absolute right-0 bottom-0 left-0 p-2 sm:text-xs">
+                    <h3 className="font-semibold uppercase sm:font-medium md:font-semibold">{title}</h3>
+                    <p className="capitalize">{publisher?.toLowerCase()}</p>
                 </div>
 
                 <span className="absolute top-0 left-[-75%] z-10 h-full w-[50%] rotate-12 bg-white/20 blur-lg transition-all duration-1000 ease-in-out group-hover:left-[125%]" />

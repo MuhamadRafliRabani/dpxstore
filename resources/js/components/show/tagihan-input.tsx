@@ -1,27 +1,26 @@
 import { handleSetData } from '@/lib/insertDataUser';
 import { inputOrder } from '@/types';
 import { Input } from '@headlessui/react';
-import { BadgeInfo } from 'lucide-react';
+import { Label } from '../ui/label';
 
 const InputTagihan = ({ data, setData, errors }: inputOrder) => {
     return (
-        <>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="flex w-full flex-col items-start justify-center gap-2 md:gap-4">
+            <Label className="text-primary text-xs">No Akun</Label>
+
+            <div className="w-full">
                 <Input
-                    placeholder="Masukan No Akun Anda"
+                    id="no_akun"
+                    placeholder="masukan no akun"
+                    inputMode="numeric"
+                    pattern="\d*"
                     value={data.no_akun}
                     onChange={(e) => handleSetData(setData, e, 'no_akun')}
-                    className="placeholder:text-primary text-primary text-sm sm:text-base md:text-sm"
+                    className="text-accent-foreground/70 text-xxs bg-accent-foreground/10 flex-1"
                 />
-                {errors.zone_id && <p className="text-sm text-red-500">{errors.zone_id}</p>}
+                {errors.no_akun && <p className="text-sm text-red-500">Isi no handphone kamu dengan benar</p>}
             </div>
-            <p className="text-primary/70 text-xs sm:text-sm md:text-xs">
-                <span>
-                    <BadgeInfo className="size-4" />
-                </span>{' '}
-                Pleas make sure you fill the correct account data.
-            </p>
-        </>
+        </div>
     );
 };
 

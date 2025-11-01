@@ -24,10 +24,9 @@ class ProductItemsResource extends Resource
                 TextColumn::make('id')->sortable(),
 
                 TextColumn::make('product_name')
-                    ->label('Name')
-                    ->searchable(),
+                    ->label('Name'),
 
-                TextColumn::make('categories.name')
+                TextColumn::make('category')
                     ->label('Kategori')
                     ->searchable(),
 
@@ -45,7 +44,8 @@ class ProductItemsResource extends Resource
                 TextColumn::make('price')
                     ->label('Harga')
                     ->money('idr', true)
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('buyer_sku_code')
                     ->label('Buyer SKU Code'),

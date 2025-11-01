@@ -26,11 +26,11 @@ export default function ProductCard({
             <div className="flex h-full flex-col justify-between">
                 <CardContent className="flex flex-col justify-center space-y-1.5 px-4 py-2">
                     {/* Title */}
-                    <p className="popout text-primary text-xs font-semibold">{title}</p>
+                    <p className="popout text-primary text-xs font-semibold capitalize sm:text-sm md:text-xs">{title.toLowerCase()}</p>
 
                     <div className="text-primary flex items-center gap-2">
                         {icon}
-                        <p className="popout text-xxs font-bold whitespace-nowrap">{formatPrice(price)}</p>
+                        <p className="popout text-xxs font-bold whitespace-nowrap sm:text-sm md:text-xs">{formatPrice(price)}</p>
                     </div>
                 </CardContent>
 
